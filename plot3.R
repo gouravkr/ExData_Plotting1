@@ -10,9 +10,12 @@ power1 <- read.table("household_power_consumption.txt", sep=";",
 					 
 power1$Date <- dmy(power1$Date)
 power2 <- filter(power1, year(Date) == 2007 & month(Date) == 2 & (day(Date)==1 | day(Date)==2))
-plot(power2$Sub_metering_1, type = "l", xlab="", ylab="Energy sub metering", xaxt = "n")
-axis(1, at=c(0,1440,2880), labels = c("Thu", "Fri", "Sat"))
-lines(power2$Sub_metering_2, type = "l", col = "red")
-lines(power2$Sub_metering_3, type = "l", col = "blue")
+power2 <- mutate(power2, datetime = ymd_hms(paste(Date, Time)))
+
+with(power2,{
+plot(datetime, Sub_metering_1, type = "l", xlab="", ylab="Energy sub metering")
+lines(datetime, Sub_metering_2, col = "red")
+lines(datetime, Sub_metering_3, col = "blue")
 legend("topright", col = c("black", "red", "blue"), 
        legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"), lwd=1)
+})
